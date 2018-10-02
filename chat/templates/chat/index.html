@@ -1,0 +1,188 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html class=''>
+<head>
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-4.0.0.min.js' %}"></script>
+
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet prefetch' href="{% static 'css/reset-2.0.min.css' %}">
+    <link rel='stylesheet prefetch' href="{% static 'css/font-awesome-4.6.2.min.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'css/chat_room.css' %}" />
+</head>
+<body>
+
+<div id="frame">
+    <div id="sidepanel">
+        <div id="profile">
+            <div class="wrap">
+                <img id="profile-img" src="{% static 'images/yoda.png' %}" class="online" alt=""/>
+                <p>Guest</p>
+{#                <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>#}
+                <div id="status-options">
+                    <ul>
+                        <li id="status-online" class="active"><span class="status-circle"></span>
+                            <p>Online</p></li>
+                        <li id="status-away"><span class="status-circle"></span>
+                            <p>Away</p></li>
+                        <li id="status-busy"><span class="status-circle"></span>
+                            <p>Busy</p></li>
+                        <li id="status-offline"><span class="status-circle"></span>
+                            <p>Offline</p></li>
+                    </ul>
+                </div>
+                <div id="expanded">
+                    <label for="facebook"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
+                    <input name="facebook" type="text" value="facebook"/>
+                    <label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
+                    <input name="twitter" type="text" value="twitter"/>
+                    <label for="instagram"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
+                    <input name="instagram" type="text" value="instagram"/>
+                </div>
+            </div>
+        </div>
+        {#        <div id="search">#}
+        {#            <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>#}
+        {#            <input type="text" placeholder="Search contacts..."/>#}
+        {#        </div>#}
+        <div id="contacts">
+            <ul>
+                <li class="contact active">
+                    <div class="wrap">
+                        <span class="contact-status busy"></span>  <!-- contact-status busy, away, online -->
+                        <img src="{% static 'images/crazia.png' %}" alt=""/>
+                        <div class="meta">
+                            <p class="name">코에</p>
+                            <p class="preview">반갑다능</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div id="bottom-bar" style="display: none;">
+            <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
+            <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
+        </div>
+    </div>
+    <div class="content">
+        <div class="contact-profile"> <!-- Social Network -->
+            <img src="{% static 'images/crazia.png' %}" alt=""/>
+            <p>코에</p>
+            <div class="social-media" style="display: none;">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="messages">
+            <ul>
+                <li class="replies"> <!-- first message -->
+                    <img src="{% static 'images/crazia.png' %}" alt=""/>
+                    <p>반갑다능</p>
+                </li>
+            </ul>
+        </div>
+        <div class="message-input">
+            <div class="wrap">
+                <input type="text" placeholder="Write your message..."/>
+                {#                <i class="fa fa-paperclip attachment" aria-hidden="true"></i>#}
+                <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/stop_timeout.js' %}"></script>
+<script>
+    var roomName = 'koei';
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var chatSocket = new WebSocket(ws_scheme + '://' + window.location.host + '/ws/chat/' + roomName + '/');
+
+    var bot_name = "코에";
+    var bot_profile_url = "{% static 'images/crazia.png' %}";
+
+    var guest_name = "Guest";
+    var guest_profile_url = "{% static 'images/yoda.png' %}";
+
+    chatSocket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        repliesMessage(message, bot_profile_url);
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    $(".messages").animate({scrollTop: $(document).height()}, "fast");
+
+    $("#profile-img").click(function () {
+        // $("#status-options").toggleClass("active");
+    });
+
+    $(".expand-button").click(function () {
+        // $("#profile").toggleClass("expanded");
+        // $("#contacts").toggleClass("expanded");
+    });
+
+    $("#status-options ul li").click(function () {
+        $("#profile-img").removeClass();
+        $("#status-online").removeClass("active");
+        $("#status-away").removeClass("active");
+        $("#status-busy").removeClass("active");
+        $("#status-offline").removeClass("active");
+        $(this).addClass("active");
+
+        if ($("#status-online").hasClass("active")) {
+            $("#profile-img").addClass("online");
+        } else if ($("#status-away").hasClass("active")) {
+            $("#profile-img").addClass("away");
+        } else if ($("#status-busy").hasClass("active")) {
+            $("#profile-img").addClass("busy");
+        } else if ($("#status-offline").hasClass("active")) {
+            $("#profile-img").addClass("offline");
+        } else {
+            $("#profile-img").removeClass();
+        }
+
+        $("#status-options").removeClass("active");
+    });
+
+    function repliesMessage(message, image_url) {
+        $('<li class="replies"><img src="' + image_url + '" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+        $('.contact.active .preview').html('<span>' + bot_name + ': </span>' + message);
+        $(".messages").animate({scrollTop: $(document).height()}, "fast");
+    }
+
+    function newMessage(image_url) {
+        var message = $(".message-input input").val();
+        if ($.trim(message) === '') {
+            return false;
+        }
+
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+
+        $('<li class="sent"><img src="' + image_url + '" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+        $('.message-input input').val(null);
+        $('.contact.active .preview').html('<span>You: </span>' + message);
+        $(".messages").animate({scrollTop: $(document).height()}, "fast");
+    }
+
+    $('.submit').click(function () {
+        newMessage(guest_profile_url);
+    });
+
+    $(window).on('keydown', function (e) {
+        if (e.which === 13) {
+            newMessage(guest_profile_url);
+            return false;
+        }
+    });
+</script>
+</body>
+</html>
