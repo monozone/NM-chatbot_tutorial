@@ -36,4 +36,4 @@ class ChatConsumer(WebsocketConsumer):
             }))
             # saving chat message to database
             c = Chat(question=message, answer=answer, verify=Chat.VERIFY_NOT)
-            c.save()
+            # c.save()

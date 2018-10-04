@@ -372,6 +372,8 @@ def create_hparams(flags):
 
 def extend_hparams(hparams):
   """Extend training hparams."""
+  #hparams.num_encoder_layers = 0
+  #hparams.num_decoder_layers = 0
   assert hparams.num_encoder_layers and hparams.num_decoder_layers
   if hparams.num_encoder_layers != hparams.num_decoder_layers:
     hparams.pass_hidden_state = False
