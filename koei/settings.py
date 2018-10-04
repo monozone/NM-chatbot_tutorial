@@ -25,12 +25,12 @@ SECRET_KEY = 'n#=r8khqrfp^qqy%-u5zei7ew&s8lmgba6)zja6xq@6vee^qye'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'chat.crazia.org',
-    'chatbot.rocketpunch.kr',
+    #'chat.crazia.org',
+    #'chatbot.rocketpunch.kr',
     'localhost',
     '127.0.0.1',
-    '13.124.79.14',
-    'srv.crazia.org',
+    #'13.124.79.14',
+    #'srv.crazia.org',
 ]
 
 # Application definition

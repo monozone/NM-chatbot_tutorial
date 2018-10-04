@@ -19,8 +19,8 @@ pyvenv.cfg
 environment.yml
 
 # IntelliJ project files
-.idea
-*.iml
+#.idea
+#*.iml
 out
 gen
 
