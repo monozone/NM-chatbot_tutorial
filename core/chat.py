@@ -68,14 +68,19 @@ class ChatBot:
         # variable check
             
         beam_width = self.hparams.beam_width
+
         num_translations_per_input = max(
             min(1, beam_width), 1)
             
         nmt_outputs, _ = self.loaded_infer_model.decode(self.sess)
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", nmt_outputs)
+
         if beam_width == 0:
             nmt_outputs = np.expand_dims(nmt_outputs, 0)
 
         batch_size = nmt_outputs.shape[1]
+        print("batch_size", batch_size)
+
 
         for sent_id in range(batch_size):
             for beam_id in range(num_translations_per_input):
