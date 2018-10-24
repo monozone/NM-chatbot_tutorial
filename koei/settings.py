@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     #'chatbot.rocketpunch.kr',
     'localhost',
     '127.0.0.1',
+    '192.168.0.107'
     #'13.124.79.14',
     #'srv.crazia.org',
 ]
